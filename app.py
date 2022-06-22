@@ -1,9 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from post import Post
 from datetime import datetime as dt
+from send_email import SendEmail
 
 app = Flask(__name__)
 posts = Post()
+send_mail = SendEmail()
 
 get_posts = posts.get_posts()
 util_data = {
@@ -23,6 +25,11 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html', util_data=util_data)
+
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    send_mail.send_form_email(request.form)
+    return redirect('/')
 
 @app.route('/post/<id>')
 def post(id):
